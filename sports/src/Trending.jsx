@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-
 export default function Trending() {
+
     const [trending, setTrending] = useState([]);
 
     useEffect(() => {
@@ -18,31 +18,45 @@ export default function Trending() {
     }, []);
 
     return (
-        <div>
-            <h1 className="text-4xl font-bold mt-14 mb-10">TRENDING PRODUCTS</h1>
-            <div className="flex justify-center items-center w-full">
-                <div className="grid grid-cols-4 gap-3 justify-around">
-                    {  //this bracket for using js elements
-                        trending.map((item) =>
-                            <div key={item.id} className="h-60 w-60  bg-[#ffffff] text-[#24003e] p-4 pt-3 pl-3 pr-3 shadow-2xl  shadow-gray-200
-                           hover:-translate-y-2  rounded-xl  text-center cursor-pointer 
-                          transform transition duration-300 ease-in-out" >
-                                <img
-                                    src={`${import.meta.env.VITE_STRAPI_URL}${item.image?.url}`}
-                                    alt={item.title}
-                                     className="h-40 w-70 mb-3"
-                                />
-                                <h4>{item.title}</h4>
-                                <p>₹{item.price}</p>
-                               
 
-                            </div>
-                        )
-                    }
-                </div>
+        <div className="mt-14 max-w-7xl mx-auto px-4">
+
+            <h1 className="text-xl md:text-3xl font-bold mb-8">
+                TRENDING PRODUCTS
+            </h1>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+                {
+                    trending.map((item) => (
+
+                        <div
+                            key={item.id}
+                            className="bg-white rounded-xl shadow-lg p-3 text-center hover:-translate-y-1 transition"
+                        >
+
+                            <img
+                                src={`${import.meta.env.VITE_STRAPI_URL}${item.image?.url}`}
+                                alt={item.title}
+                                className="w-full h-28 md:h-40 object-contain rounded-md"
+                            />
+
+                            <h4 className="text-sm md:text-lg mt-2">
+                                {item.title}
+                            </h4>
+
+                            <p className="text-sm md:text-lg font-bold">
+                                ₹{item.price}
+                            </p>
+
+                        </div>
+
+                    ))
+                }
 
             </div>
+
         </div>
+
     );
 }
-

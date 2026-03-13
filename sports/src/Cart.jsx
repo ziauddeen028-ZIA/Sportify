@@ -1,13 +1,14 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart, resetCart, increaseQuantity, decreaseQuantity } from "./redux/cartSlice";
+import { removeFromCart, resetCart } from "./redux/cartSlice";
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function Cart() {
+export default function Cart({ setOpen }) {
 
     const cartItems = useSelector((state) => state.cart.items);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const total = cartItems.reduce(
         (sum, item) =>
@@ -15,67 +16,84 @@ export default function Cart() {
         0
     );
 
-    const navigate=useNavigate();
-
-
     return (
-        <div className="cart absolute max-h-[350px] overflow-y-auto right-5 top-20 z-10 bg-white p-5 h-fit w-[400px] shadow rounded-xl shadow-gray-600">
-            <h1 className="text-4xl font-bold text-[#24003e] pb-5">
+
+        <div className="cart absolute right-2 md:right-5 top-16 md:top-20 z-50 bg-white p-4 md:p-5 h-fit w-[90vw] md:w-[400px] max-h-[400px] overflow-y-auto shadow-xl rounded-xl shadow-gray-600">
+
+            <h1 className="text-2xl md:text-4xl font-bold text-[#24003e] pb-5">
                 Products in your Cart
             </h1>
 
             {cartItems.map((item) => (
+
                 <div
-                    className="container h-[150px] bg-[#e8f3f1] border bottom-2 mt-2 rounded-sm"
+                    className="bg-[#e8f3f1] border mt-2 rounded-lg p-3 flex gap-3 items-center"
                     key={item.id}
                 >
-                    <div className="first flex gap-4 mt-4">
-                        <div className="img-details h-[160px] w-[160px] pl-2">
-                            <img
-                                src={`${import.meta.env.VITE_STRAPI_URL}${item.image?.url}`}
-                                alt={item.title}
-                            />
-                        </div>
 
-                        <div className="description w-[300px]">
-                            <div className="img-title text-xl font-bold text-[#24003e] pb-1">
-                                {item.title}
-                            </div>
-
-                            <div className="img-price text-xl font-bold text-[#24003e] pb-3">
-                                {item.quantity} X ₹{item.price}
-                            </div>
-                        </div>
-
-                        <div className="delete">
-                            <DeleteOutlineOutlinedIcon
-                                onClick={() => dispatch(removeFromCart(item.id))}
-                                className="hover:text-red-700 cursor-pointer"
-                            />
-                        </div>
+                    {/* IMAGE */}
+                    <div className="h-[70px] w-[70px] md:h-[100px] md:w-[100px] flex-shrink-0">
+                        <img
+                            src={`${import.meta.env.VITE_STRAPI_URL}${item.image?.url}`}
+                            alt={item.title}
+                            className="w-full h-full object-contain"
+                        />
                     </div>
+
+                    {/* PRODUCT DETAILS */}
+                    <div className="flex-1">
+
+                        <div className="text-lg md:text-xl font-bold text-[#24003e]">
+                            {item.title}
+                        </div>
+
+                        <div className="text-sm md:text-lg font-semibold text-[#24003e]">
+                            {item.quantity} X ₹{item.price}
+                        </div>
+
+                    </div>
+
+                    {/* DELETE BUTTON */}
+                    <DeleteOutlineOutlinedIcon
+                        onClick={() => dispatch(removeFromCart(item.id))}
+                        className="hover:text-red-700 cursor-pointer"
+                    />
+
                 </div>
+
             ))}
 
-            <div className="second flex justify-between text-xl font-bold text-[#24003e] mt-2 mb-2">
+            {/* SUBTOTAL */}
+
+            <div className="flex justify-between text-lg md:text-xl font-bold text-[#24003e] mt-4 mb-3">
                 <h1>SUBTOTAL</h1>
                 <h1>₹{total}</h1>
             </div>
 
-            <div className="third  cursor-pointer text-center p-2 mb-2">
-                <button className="bg-[#00c9b2] hover:bg-[#009987] p-2 w-full cursor-pointer text-white" onClick={()=>{
-                    navigate("/Checkout");
-                }}>Proceed to Check</button>
+            {/* CHECKOUT BUTTON */}
+
+            <div className="text-center mb-3">
+                <button
+                    className="bg-[#00c9b2] hover:bg-[#009987] p-2 w-full text-white rounded-md cursor-pointer"
+                    onClick={() => {
+                        navigate("/checkout");
+                        setOpen(false);
+                    }}
+                >
+                    Proceed to Checkout
+                </button>
             </div>
 
-            <div className="fourth">
-                <p
-                    onClick={() => dispatch(resetCart())}
-                    className="text-red-700 cursor-pointer"
-                >
-                    Reset Cart
-                </p>
-            </div>
+            {/* RESET CART */}
+
+            <p
+                onClick={() => dispatch(resetCart())}
+                className="text-red-700 cursor-pointer text-sm md:text-base"
+            >
+                Reset Cart
+            </p>
+
         </div>
+
     );
 }

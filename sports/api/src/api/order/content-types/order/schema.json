@@ -61,6 +61,14 @@
       "relation": "oneToMany",
       "target": "api::order-item.order-item",
       "mappedBy": "order"
+    },
+    "paymentMethod": {
+      "type": "enumeration",
+      "enum": [
+        "upi",
+        "card",
+        "cod"
+      ]
     }
   }
 }

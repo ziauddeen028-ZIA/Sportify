@@ -6,9 +6,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
 export default function Login() {
+
   const navigate = useNavigate();
 
-  // ✅ Validation Schema
   const schema = Yup.object({
     identifier: Yup.string()
       .required("Email or Username is required"),
@@ -18,7 +18,6 @@ export default function Login() {
       .required("Password is required"),
   });
 
-  // ✅ React Hook Form
   const {
     register,
     handleSubmit,
@@ -29,6 +28,7 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     try {
+
       const res = await fetch(
         `${import.meta.env.VITE_STRAPI_URL}/api/auth/local`,
         {
@@ -43,23 +43,33 @@ export default function Login() {
       const result = await res.json();
 
       if (result.jwt) {
+
         localStorage.setItem("token", result.jwt);
         localStorage.setItem("user", JSON.stringify(result.user));
 
         toast.success("Login Successful 🎉");
+
         navigate("/");
+
       } else {
+
         toast.error(result.error.message);
+
       }
+
     } catch {
+
       toast.error("Login Failed");
+
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#e8f3f1]">
-      <div className="bg-white shadow-xl rounded-2xl p-8 w-96">
-        <h2 className="text-3xl font-bold text-center text-[#24003e] mb-6">
+
+    <div className=" bg-[#e8f3f1] flex justify-center px-4 pt-20">
+      <div className="bg-white shadow-2xl rounded-3xl p-6 md:p-10 w-full max-w-md">
+
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-[#24003e] mb-8">
           Login
         </h2>
 
@@ -69,9 +79,10 @@ export default function Login() {
           <input
             {...register("identifier")}
             placeholder="Email or Username"
-            className="w-full p-2 border rounded-lg mb-2"
+            className="w-full p-3 border border-gray-400 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-[#00c9b2]"
           />
-          <p className="text-red-500 text-sm mb-3">
+
+          <p className="text-red-600 text-sm mb-3">
             {errors.identifier?.message}
           </p>
 
@@ -80,27 +91,35 @@ export default function Login() {
             type="password"
             {...register("password")}
             placeholder="Password"
-            className="w-full p-2 border rounded-lg mb-2"
+            className="w-full p-3 border border-gray-400 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-[#00c9b2]"
           />
-          <p className="text-red-500 text-sm mb-4">
+
+          <p className="text-red-600 text-sm mb-6">
             {errors.password?.message}
           </p>
 
           <button
             type="submit"
-            className="w-full bg-[#00c9b2] cursor-pointer hover:bg-[#009987] text-white py-2 rounded-lg"
+            className="w-full bg-[#00c9b2] hover:bg-[#009987] text-white py-3 rounded-lg font-semibold cursor-pointer"
           >
             Login
           </button>
+
         </form>
 
-        <p className="text-center text-sm mt-4">
-          Don’t have an account?{" "}
-          <Link to="/signup" className="text-[#00c9b2] font-semibold ">
+        <p className="text-center text-sm mt-4 text-gray-600">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-[#00c9b2] font-semibold hover:underline"
+          >
             Signup
           </Link>
         </p>
+
       </div>
+
     </div>
+
   );
 }

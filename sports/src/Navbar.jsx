@@ -2,25 +2,26 @@ import React, { useState } from "react";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu';
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Cart from "./Cart";
 import LogoutIcon from '@mui/icons-material/Logout';
 import { toast } from "react-toastify";
 
-
 export default function Navbar() {
+
     const [open, setOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false); // hamburger state
 
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         navigate(e.target.value);
-    }
+    };
 
     const cartItems = useSelector((state) => state.cart.items);
     const wishlistItems = useSelector((state) => state.wishlist.items);
-
 
     const totalQuantity = cartItems.reduce(
         (total, item) => total + item.quantity,
@@ -42,60 +43,97 @@ export default function Navbar() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     return (
-        <div >
-            <nav className="flex justify-between items-center p-5 bg-[#24003e] text-white ">
-                <div className="left">
-                    <h1 className="text-4xl font-bold cursor-pointer " onClick={() => navigate("/")}>Sportify</h1>
+        <div>
+
+            <nav className="flex justify-between items-center p-4 md:p-5 bg-[#24003e] text-white">
+
+                {/* LEFT */}
+                <div className="flex items-center gap-3">
+
+                    {/* Hamburger (mobile only) */}
+                    <button
+                        className="md:hidden"
+                        onClick={() => setMenuOpen(!menuOpen)}
+                    >
+                        <MenuIcon />
+                    </button>
+
+                    <h1
+                        className="text-2xl md:text-4xl font-bold cursor-pointer"
+                        onClick={() => navigate("/")}
+                    >
+                        Sportify
+                    </h1>
+
                 </div>
-                <div className="center  flex gap-10 " >
-                    <Link to="/"> <h3 className="cursor-pointer hover:text-[#00c9b2]">HOME</h3></Link>
+
+
+                {/* CENTER MENU (desktop only) */}
+                <div className="hidden md:flex gap-10">
+
+                    <Link to="/">
+                        <h3 className="cursor-pointer hover:text-[#00c9b2]">HOME</h3>
+                    </Link>
 
                     <h3 className="cursor-pointer hover:text-[#00c9b2]">
 
-
-                        <label for="categories" className="brand"></label>
-                        <select id="categories" name="categories" onChange={handleChange} >
-                            <option value="" selected className="text-[#24003e] ">CATEGORIES</option>
-                            <option value="/products" className="text-[#24003e] ">All </option>
-                            <option value="/football" className="text-[#24003e] "> FOOTBALL</option>
-                            <option value="/cricket" className="text-[#24003e] " >CRICKET</option>
-                            <option value="/indoor" className="text-[#24003e] " >INDOOR</option>
+                        <select
+                            value=""
+                            id="categories"
+                            name="categories"
+                            onChange={handleChange}
+                            className="bg-[#24003e]"
+                        >
+                            <option value="">CATEGORIES</option>
+                            <option value="/products">All</option>
+                            <option value="/football">FOOTBALL</option>
+                            <option value="/cricket">CRICKET</option>
+                            <option value="/indoor">INDOOR</option>
                         </select>
-
 
                     </h3>
 
-                    <Link to="/products"><h3 className="cursor-pointer hover:text-[#00c9b2]">PRODUCTS</h3></Link>
+                    <Link to="/products">
+                        <h3 className="cursor-pointer hover:text-[#00c9b2]">
+                            PRODUCTS
+                        </h3>
+                    </Link>
+
                 </div>
-                <div className="right  flex gap-10 ">
-                    <div className="login cursor-pointer  ">
+
+
+                {/* RIGHT */}
+                <div className="flex items-center gap-5 md:gap-10">
+
+                    <div className="login">
+
                         {!token ? (
-                            <Link to="/login" className="">
-                                LOGIN
-                            </Link>
+                            <Link to="/login">LOGIN</Link>
                         ) : (
                             <div className="flex items-center gap-3">
-                                <span className="font-semibold text-2xl text-[#00c9b2]">
-                                    Hello, {user?.username?.toUpperCase() || "USER"}
+                                <span className="hidden md:block font-semibold text-2xl text-[#00c9b2]">                                    Hello, {user?.username?.toUpperCase() || "USER"}
                                 </span>
 
                                 <button
                                     onClick={handleLogout}
-                                    className="text-red-500 cursor-pointer"
+                                    className="text-red-500"
                                 >
                                     <LogoutIcon />
                                 </button>
                             </div>
                         )}
+
                     </div>
 
-                    <div className="profile  hover:text-[#00c9b2]">
-                        {token && (
-                            <button className="cursor-pointer" onClick={() => navigate("/profile")}>
-                                <AccountCircleIcon />
-                            </button>
-                        )}
-                    </div>
+                    {token && (
+                        <button
+                            onClick={() => navigate("/profile")}
+                            className="hover:text-[#00c9b2]"
+                        >
+                            <AccountCircleIcon />
+                        </button>
+                    )}
+
                     <button
                         onClick={() => {
                             if (!token) {
@@ -103,10 +141,8 @@ export default function Navbar() {
                             } else {
                                 navigate("/wishlist");
                             }
-                        }
-
-                        }
-                        className="relative favorite cursor-pointer hover:text-pink-500"
+                        }}
+                        className="relative hover:text-pink-500"
                     >
                         <FavoriteBorderIcon />
 
@@ -117,18 +153,16 @@ export default function Navbar() {
                         )}
                     </button>
 
-                    <button className="relative cart cursor-pointer hover:text-[#00c9b2]"
+                    <button
+                        className="relative hover:text-[#00c9b2]"
                         onClick={() => {
                             if (!token) {
                                 navigate("/login");
                             } else {
-                                setOpen(!open)
+                                setOpen(!open);
                             }
-                        }
-
-                        }
+                        }}
                     >
-
                         <ShoppingCartOutlinedIcon />
 
                         {totalQuantity > 0 && (
@@ -136,15 +170,46 @@ export default function Navbar() {
                                 {totalQuantity}
                             </span>
                         )}
-
-
                     </button>
 
+                </div>
+
+            </nav>
+
+
+            {/* MOBILE MENU */}
+            {menuOpen && (
+                <div className="md:hidden bg-[#24003e] text-white flex flex-col gap-4 p-4">
+
+                    <Link to="/" onClick={() => setMenuOpen(false)}>
+                        HOME
+                    </Link>
+
+                    <select
+                        onChange={(e) => {
+                            handleChange(e);
+                            setMenuOpen(false);
+                        }}
+                        className="bg-[#24003e]"
+                    >
+                        <option value="">CATEGORIES</option>
+                        <option value="/products">All</option>
+                        <option value="/football">FOOTBALL</option>
+                        <option value="/cricket">CRICKET</option>
+                        <option value="/indoor">INDOOR</option>
+                    </select>
+
+                    <Link to="/products" onClick={() => setMenuOpen(false)}>
+                        PRODUCTS
+                    </Link>
 
                 </div>
-            </nav>
-            {open && <Cart />}
+            )}
+
+            {open && <Cart setOpen={setOpen} />}
+
             <Outlet />
+
         </div>
     );
 }

@@ -6,12 +6,12 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist, removeFromWishlist } from "./redux/wishlistSlice";
 
-
-
 export default function Indoor() {
+
     const [products, setProducts] = useState([]);
     const dispatch = useDispatch();
     const wishlistItems = useSelector((state) => state.wishlist.items);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(
@@ -24,43 +24,40 @@ export default function Indoor() {
         )
             .then(res => res.json())
             .then(data => setProducts(data.data));
-
-
-
     }, []);
 
-    const navigate = useNavigate();
-
     const detail = (id) => {
-        console.log("Clicked ID:", id);
         navigate(`/singleproduct/${id}`);
     };
 
-
-
-
     return (
         <div>
-            <h1 className="text-4xl font-bold mt-14 mb-5">INDOOR GAME </h1>
+
+            <h1 className="text-4xl font-bold mt-14 mb-5">
+                INDOOR GAME
+            </h1>
+
             <div className="flex justify-center items-center w-full">
-                <div className="grid grid-cols-3 gap-3 justify-around">
-                    {  //this bracket for using js elements
-                        products.map((item) =>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+
+                    {products.map((item) => {
+
+                        const isWishlisted = wishlistItems.some(w => w.id === item.id);
+
+                        return (
                             <div
                                 key={item.id}
-                                className="group relative h-80 w-70 bg-white text-[#24003e] p-4 shadow-2xl 
-             shadow-gray-200 hover:-translate-y-2 rounded-2xl text-center 
-             cursor-pointer transform transition duration-300 ease-in-out hover:block "
+                                className="relative bg-white p-4 rounded-2xl shadow-xl text-center cursor-pointer hover:-translate-y-2 transition"
                                 onClick={() => detail(item.documentId)}
                             >
 
+                                {/* ❤️ Wishlist */}
                                 <button
                                     onClick={(e) => {
-                                        e.stopPropagation(); // 🔥 Prevent opening detail page
+                                        e.stopPropagation();
 
-                                        const exists = wishlistItems.find(w => w.id === item.id);
-
-                                        if (exists) {
+                                        if (isWishlisted) {
                                             dispatch(removeFromWishlist(item.id));
                                             toast.warning("Removed from wishlist");
                                         } else {
@@ -70,15 +67,14 @@ export default function Indoor() {
                                                 price: item.price,
                                                 image: item.image
                                             }));
-                                            toast.info("Added to wishlist ❤️");
+                                            toast.success("Added to wishlist ❤️");
                                         }
                                     }}
-                                    className={`absolute top-3 right-3 text-2xl text-red-500 
-                                        ${wishlistItems.some(w => w.id === item.id) ? "block" : "hidden group-hover:block"} cursor-pointer`} >
-                                    {wishlistItems.some(w => w.id === item.id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                                    className="absolute top-3 right-3 text-red-500 text-2xl"
+                                >
+                                    {isWishlisted ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                                 </button>
 
-                                {/* IMAGE */}
                                 <img
                                     src={
                                         item.image?.url
@@ -86,22 +82,23 @@ export default function Indoor() {
                                             : "/no-image.png"
                                     }
                                     alt={item.title}
-                                    className="h-50 w-70 mb-3"
+                                    className="h-40 w-full object-contain mb-3"
                                 />
 
                                 <h4>{item.title}</h4>
                                 <p>₹{item.price}</p>
 
-                                <button className="bg-[#009987] text-white w-full hover:bg-[#24003e] cursor-pointer p-2 rounded-sm">
+                                <button className="bg-[#009987] text-white w-full mt-2 p-2 rounded">
                                     MORE INFO
                                 </button>
+
                             </div>
-                        )
-                    }
+                        );
+                    })}
+
                 </div>
 
             </div>
         </div>
     );
 }
-

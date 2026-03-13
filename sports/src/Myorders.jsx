@@ -56,7 +56,7 @@ export default function MyOrders() {
       {orders.map((order) => (
         <div key={order.id} className="bg-white shadow-lg rounded-xl p-5 mb-6">
 
-          <div className="flex justify-between items-center mb-3">
+          <div className="flex justify-between items-start mb-3 gap-2">
             <p className="font-semibold">
               Order ID: #{order.id}
             </p>
@@ -73,7 +73,7 @@ export default function MyOrders() {
             const imageUrl = item.product?.image?.url;
 
             return (
-              <div key={item.id} className="flex items-center gap-5 border-t pt-4 mt-4">
+              <div key={item.id} className="flex items-start gap-5 border-t pt-4 mt-4">
 
                 {imageUrl && (
                   <img
@@ -83,7 +83,7 @@ export default function MyOrders() {
                   />
                 )}
 
-                <div>
+                <div className="flex-1">
                   <p className="font-semibold">
                     {item.product?.name}
                   </p>

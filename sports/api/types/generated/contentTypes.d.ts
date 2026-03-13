@@ -620,6 +620,7 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       ['pending', 'paid', 'confirmed', 'delivered', 'cancelled', 'shipped']
     > &
       Schema.Attribute.DefaultTo<'pending'>;
+    paymentMethod: Schema.Attribute.Enumeration<['upi', 'card', 'cod']>;
     phoneNumber: Schema.Attribute.String & Schema.Attribute.Required;
     pincode: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;

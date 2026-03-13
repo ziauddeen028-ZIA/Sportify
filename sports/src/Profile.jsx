@@ -1,83 +1,91 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import LogoutIcon from '@mui/icons-material/Logout';
-import Football from "./Football";
 import userimg from "../src/assets/images/user.jpg";
 
-
-
 export default function Profile() {
-    const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem("user"));
-    const token = localStorage.getItem("token");
 
-    useEffect(() => {
-        if (!token) {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
+    const handleLogout = () => {
+        const isConfirmed = window.confirm("Do you want to Logout?");
+
+        if (isConfirmed) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            toast.info("Logged out");
             navigate("/login");
         }
-    }, []);
-
-    const [orders, setOrders] = useState([]);
-
-    useEffect(() => {
-        const fetchOrders = async () => {
-            const token = localStorage.getItem("token");
-
-            const res = await fetch(
-                `${import.meta.env.VITE_STRAPI_URL}/api/orders?populate=${user?.id}&populate=order_items`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            const data = await res.json();
-            setOrders(data.data);
-        };
-
-        fetchOrders();
-    }, [token, navigate]);
-
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        navigate("/login");
     };
 
-    return (
-        <div className="container flex justify-center items-center mt-7">
+  return (
 
-            <div className=" h-105 w-90 bg-white p-5 pb-5 rounded-2xl shadow-[10px_10px_10px_rgba(0,0,0,0.25)]">
-                <h1 className="text-4xl font-bold text-center mb-3 text-[#24003e]">MY PROFILE</h1>
-                <div className="img-container flex justify-center">
-                    <img
-                        src={userimg}
-                        alt="Default Profile"
-                        className=" w-32 h-32 rounded-full object-cover bg-gray-200 "
-                    />
-                </div>
-                <div className="details">
-                    <p className="text-2xl p-2">
-                        Name : {user?.username}
-                    </p>
+    <div className="flex justify-center items-center mt-10 px-4">
 
-                    <p className="text-2xl p-2">
-                        UID : {user?.id}
-                    </p>
+      <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-xl">
 
-                    <p className="text-2xl p-2 mb-2">
-                        Email : {user?.email}
-                    </p>
-                </div>
-                <div className="order text-center ">
-                    <button onClick={()=>{
-                        navigate("/myorders")
-                    }} className="w-full bg-[#009987] hover:bg-[#24003e] cursor-pointer text-white p-2 rounded-xl mb-4">My Orders</button>
-                </div>
+        {/* TITLE */}
 
-            </div>
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 text-[#24003e]">
+          MY PROFILE
+        </h1>
+
+        {/* IMAGE */}
+
+        <div className="flex justify-center mb-6">
+          <img
+            src={userimg}
+            alt="profile"
+            className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover"
+          />
         </div>
 
-    );
+        {/* USER DETAILS */}
+
+        <div className="space-y-3 text-lg md:text-xl text-gray-800">
+
+          <p>
+            <span className="font-semibold">Name:</span> {user?.username}
+          </p>
+
+          <p>
+            <span className="font-semibold">UID:</span> {user?.id}
+          </p>
+
+          <p>
+            <span className="font-semibold">Email:</span> {user?.email}
+          </p>
+
+        </div>
+
+        {/* BUTTONS */}
+
+        <div className="mt-6 flex flex-col gap-3">
+
+          <button
+            onClick={() => navigate("/myorders")}
+            className="w-full bg-[#009987] hover:bg-[#24003e] text-white p-2 rounded-xl cursor-pointer"
+          >
+            My Orders
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-500 hover:bg-red-600 text-white p-2 rounded-xl cursor-pointer"
+          >
+            Logout
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
 }

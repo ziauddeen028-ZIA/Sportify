@@ -1,135 +1,154 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { resetCart } from "./redux/cartSlice";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 export default function Checkout() {
 
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    // ✅ Get cart from Redux
-    const cart = useSelector((state) => state.cart.items);
+  const cart = useSelector((state) => state.cart.items);
 
-    const total = cart.reduce(
-        (sum, item) => sum + Number(item.price) * Number(item.quantity),
-        0
-    );
+  const total = cart.reduce(
+    (sum, item) => sum + Number(item.price) * Number(item.quantity),
+    0
+  );
 
-    const [formData, setFormData] = useState({
-        fullName: "",
-        phoneNumber: "",
-        address: "",
-        city: "",
-        pincode: "",
-        state: "",
-        country: ""
+  const [formData, setFormData] = useState({
+    fullName: "",
+    phoneNumber: "",
+    address: "",
+    city: "",
+    pincode: "",
+    state: "",
+    country: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
     });
+  };
 
-    const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
+  return (
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
+    <div className="px-4 md:px-10 mt-8 flex justify-center">
 
-    const placeOrder = async () => {
+      <div className="w-full max-w-4xl">
 
-        if (cart.length === 0) {
-            alert("Cart is empty");
-            return;
-        }
+        <h2 className="text-2xl md:text-3xl font-bold mb-6">
+          Checkout
+        </h2>
 
-        try {
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
 
-            // 1️⃣ Create Order
-            const orderRes = await fetch("http://localhost:1337/api/orders", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    data: {
-                        user: user.id,
-                        totalAmount: total,
-                        orderStatus: "pending",
-                        ...formData
-                    }
-                })
+            if (cart.length === 0) {
+              toast.error("Cart is empty");
+              return;
+            }
+
+            navigate("/payment", {
+              state: { formData, cart, total }
             });
+          }}
+          className="bg-white p-6 rounded-xl shadow-lg grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
 
-            const orderData = await orderRes.json();
+          <input
+            type="text"
+            name="fullName"
+            placeholder="Full Name"
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
 
-            if (!orderRes.ok) {
-                console.log(orderData);
-                alert("Order creation failed");
-                return;
-            }
+          <input
+            type="number"
+            name="phoneNumber"
+            placeholder="Phone Number"
+            onChange={handleChange}
+            onInput={(e) => {
+              e.target.value = e.target.value.replace(/[^0-9]/g, "");
+            }}
+            className="border p-2 rounded"
+            pattern="[0-9]{10}"
+            title="Enter a valid 10 digit phone number"
+            required
+          />
 
-            const orderId = orderData.data.id;
+          <input
+            type="text"
+            name="address"
+            placeholder="Address"
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
 
-            for (let item of cart) {
-                await fetch("http://localhost:1337/api/order-items", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        data: {
-                            price: item.price,
-                            quantity: item.quantity,
-                            order: orderId,
-                            product: item.id,
+          <input
+            type="text"
+            name="city"
+            placeholder="City"
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
 
-                        }
-                    })
-                });
-            }
-            dispatch(resetCart()); // ✅ clear redux cart
+          <input
+            type="number"
+            name="pincode"
+            placeholder="Pincode"
+            onChange={handleChange}
+            onInput={(e) => {
+              e.target.value = e.target.value.replace(/[^0-9]/g, "");
+            }}
+            className="border p-2 rounded"
+            pattern="[0-9]{6}"
+            title="Enter a valid 6 digit pincode"
+            required
+          />
 
-            toast.success("Order Placed Successfully 🔥");
+          <input
+            type="text"
+            name="state"
+            placeholder="State"
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
 
-            navigate("/myorders");
+          <input
+            type="text"
+            name="country"
+            placeholder="Country"
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
 
-        } catch (error) {
-            console.log(error);
-            alert("Server Error");
-        }
-    };
+          <div className="col-span-1 md:col-span-2 mt-4">
 
-    return (
-        <div className="p-10">
+            <h3 className="text-xl font-bold mb-3">
+              Total: ₹{total}
+            </h3>
 
-            <h2 className="text-3xl font-bold mb-5">Checkout</h2>
-
-            <div className="grid grid-cols-2 gap-5 mb-5">
-                <input name="fullName" placeholder="Full Name" onChange={handleChange} className="border p-2" required />
-                <input name="phoneNumber" placeholder="Phone Number" onChange={handleChange} className="border p-2" required />
-                <input name="address" placeholder="Address" onChange={handleChange} className="border p-2" required />
-                <input name="city" placeholder="City" onChange={handleChange} className="border p-2" required />
-                <input name="pincode" placeholder="Pincode" onChange={handleChange} className="border p-2" required />
-                <input name="state" placeholder="State" onChange={handleChange} className="border p-2" required />
-                <input name="country" placeholder="Country" onChange={handleChange} className="border p-2" required />
-            </div>
-
-            <h3 className="text-xl font-bold mb-3">Total: ₹{total}</h3>
-
-            <button className="bg-[#00c9b2] hover:bg-[#009987] p-2 w-1/4 cursor-pointer text-white"
-                onClick={() =>
-                    navigate("/payment", {
-                        state: { formData, cart, total }
-                    })
-                }
+            <button
+              type="submit"
+              className="bg-[#00c9b2] hover:bg-[#009987] p-3 w-full md:w-1/3 text-white rounded cursor-pointer"
             >
-                Proceed to Payment
+              Proceed to Payment
             </button>
 
-        </div>
-    );
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  );
 }

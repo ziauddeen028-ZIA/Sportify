@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
 export default function Signup() {
+
   const navigate = useNavigate();
 
   const schema = Yup.object({
@@ -31,7 +32,9 @@ export default function Signup() {
   });
 
   const onSubmit = async (data) => {
+
     try {
+
       const res = await fetch(
         `${import.meta.env.VITE_STRAPI_URL}/api/auth/local/register`,
         {
@@ -44,22 +47,35 @@ export default function Signup() {
       const result = await res.json();
 
       if (result.jwt) {
+
         localStorage.setItem("token", result.jwt);
         localStorage.setItem("user", JSON.stringify(result.user));
+
         toast.success("Account Created Successfully 🎉");
+
         navigate("/");
+
       } else {
+
         toast.error(result.error.message);
+
       }
+
     } catch {
+
       toast.error("Signup Failed");
+
     }
+
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#e8f3f1]">
-      <div className="bg-white shadow-xl rounded-2xl p-8 w-96">
-        <h2 className="text-3xl font-bold text-center text-[#24003e] mb-6">
+
+    <div className=" bg-[#e8f3f1] flex justify-center px-4 py-10">
+
+      <div className="bg-white shadow-2xl rounded-3xl p-6 md:p-10 w-full max-w-md">
+
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-[#24003e] mb-8">
           Signup
         </h2>
 
@@ -69,9 +85,10 @@ export default function Signup() {
           <input
             {...register("username")}
             placeholder="Enter username"
-            className="w-full p-2 border rounded-lg mb-2"
+            className="w-full p-3 border border-gray-400 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-[#00c9b2]"
           />
-          <p className="text-red-700 text-sm mb-2">
+
+          <p className="text-red-600 text-sm mb-3">
             {errors.username?.message}
           </p>
 
@@ -79,9 +96,10 @@ export default function Signup() {
           <input
             {...register("email")}
             placeholder="Enter email"
-            className="w-full p-2 border rounded-lg mb-2"
+            className="w-full p-3 border border-gray-400 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-[#00c9b2]"
           />
-          <p className="text-red-700 text-sm mb-2">
+
+          <p className="text-red-600 text-sm mb-3">
             {errors.email?.message}
           </p>
 
@@ -90,27 +108,35 @@ export default function Signup() {
             type="password"
             {...register("password")}
             placeholder="Enter password"
-            className="w-full p-2 border rounded-lg mb-2"
+            className="w-full p-3 border border-gray-400 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-[#00c9b2]"
           />
-          <p className="text-red-700 text-sm mb-4">
+
+          <p className="text-red-600 text-sm mb-6">
             {errors.password?.message}
           </p>
 
           <button
             type="submit"
-            className="w-full bg-[#00c9b2] cursor-pointer hover:bg-[#009987] text-white py-2 rounded-lg"
+            className="w-full bg-[#00c9b2] hover:bg-[#009987] text-white py-3 rounded-lg font-semibold cursor-pointer"
           >
             Signup
           </button>
+
         </form>
 
-        <p className="text-center text-sm mt-4">
+        <p className="text-center text-sm mt-4 text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className="text-[#00c9b2] font-semibold">
+          <Link
+            to="/login"
+            className="text-[#00c9b2] font-semibold hover:underline"
+          >
             Login
           </Link>
         </p>
+
       </div>
+
     </div>
+
   );
 }
