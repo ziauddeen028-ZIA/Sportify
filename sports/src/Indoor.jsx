@@ -31,72 +31,72 @@ export default function Indoor() {
     };
 
     return (
-        <div>
+        <div className="px-4 md:px-10">
 
-            <h1 className="text-4xl font-bold mt-14 mb-5">
+            <h1 className="text-3xl md:text-4xl font-bold mt-10 mb-6">
                 INDOOR GAME
             </h1>
 
-            <div className="flex justify-center items-center w-full">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {products.map((item) => {
 
-                    {products.map((item) => {
+                    const isWishlisted = wishlistItems.some(w => w.id === item.id);
 
-                        const isWishlisted = wishlistItems.some(w => w.id === item.id);
+                    return (
+                        <div
+                            key={item.id}
+                            onClick={() => detail(item.documentId)}
+                            className="relative bg-white text-[#24003e] p-4 rounded-2xl shadow-xl hover:-translate-y-2 transition cursor-pointer"
+                        >
 
-                        return (
-                            <div
-                                key={item.id}
-                                className="relative bg-white p-4 rounded-2xl shadow-xl text-center cursor-pointer hover:-translate-y-2 transition"
-                                onClick={() => detail(item.documentId)}
-                            >
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
 
-                                {/* ❤️ Wishlist */}
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-
-                                        if (isWishlisted) {
-                                            dispatch(removeFromWishlist(item.id));
-                                            toast.warning("Removed from wishlist");
-                                        } else {
-                                            dispatch(addToWishlist({
-                                                id: item.id,
-                                                title: item.title,
-                                                price: item.price,
-                                                image: item.image
-                                            }));
-                                            toast.success("Added to wishlist ❤️");
-                                        }
-                                    }}
-                                    className="absolute top-3 right-3 text-red-500 text-2xl"
-                                >
-                                    {isWishlisted ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                                </button>
-
-                                <img
-                                    src={
-                                        item.image?.url
-                                            ? `${import.meta.env.VITE_STRAPI_URL}${item.image.url}`
-                                            : "/no-image.png"
+                                    if (isWishlisted) {
+                                        dispatch(removeFromWishlist(item.id));
+                                        toast.warning("Removed from wishlist");
+                                    } else {
+                                        dispatch(addToWishlist({
+                                            id: item.id,
+                                            title: item.title,
+                                            price: item.price,
+                                            image: item.image
+                                        }));
+                                        toast.success("Added to wishlist ❤️");
                                     }
-                                    alt={item.title}
-                                    className="h-40 w-full object-contain mb-3"
-                                />
+                                }}
+                                className="absolute top-3 right-3 text-red-500 text-2xl z-10"
+                            >
+                                {isWishlisted ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                            </button>
 
-                                <h4>{item.title}</h4>
-                                <p>₹{item.price}</p>
+                            <img
+                                src={
+                                    item.image?.url
+                                        ? `${import.meta.env.VITE_STRAPI_URL}${item.image.url}`
+                                        : "/no-image.png"
+                                }
+                                alt={item.title}
+                                className="h-40 md:h-48 w-full object-contain mb-3"
+                            />
 
-                                <button className="bg-[#009987] text-white w-full mt-2 p-2 rounded">
-                                    MORE INFO
-                                </button>
+                            <h4 className="font-semibold text-lg text-center">
+                                {item.title}
+                            </h4>
 
-                            </div>
-                        );
-                    })}
+                            <p className="font-bold text-center">
+                                ₹{item.price}
+                            </p>
 
-                </div>
+                            <button className="mt-3 w-full bg-[#009987] hover:bg-[#24003e] text-white py-2 rounded">
+                                MORE INFO
+                            </button>
+
+                        </div>
+                    );
+                })}
 
             </div>
         </div>

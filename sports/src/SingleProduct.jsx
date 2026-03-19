@@ -63,7 +63,7 @@ export default function SingleProduct() {
                                     : "/no-image.png"
                             }
                             alt={product.title}
-                            className="w-full h-auto object-cover"
+                            className="w-full h-full object-cover"
                         />
 
                     </div>
