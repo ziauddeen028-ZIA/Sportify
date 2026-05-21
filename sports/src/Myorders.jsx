@@ -10,7 +10,7 @@ export default function MyOrders() {
 
     const fetchOrders = async () => {
       const res = await fetch(
-        `${import.meta.env.VITE_STRAPI_URL}/api/orders?populate[order_items][populate][product][populate]=image`,
+        `${import.meta.env.VITE_STRAPI_URL}/api/orders?filters[user][documentId][$eq]=${user.documentId}&populate[order_items][populate][product][populate]=image`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
