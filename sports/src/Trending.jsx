@@ -36,7 +36,7 @@ export default function Trending() {
                         >
 
                             <img
-                                src={`${import.meta.env.VITE_STRAPI_URL}${item.image?.url}`}
+                                src={item.image?.url}
                                 alt={item.title}
                                 className="w-full h-28 md:h-40 object-contain rounded-md"
                             />

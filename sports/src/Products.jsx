@@ -21,6 +21,7 @@ export default function Products() {
   const detail = (id) => {
     navigate(`/singleproduct/${id}`);
   };
+  
 
   return (
 
@@ -47,7 +48,7 @@ export default function Products() {
               <img
                 src={
                   product.image
-                    ? `${import.meta.env.VITE_STRAPI_URL}${product.image.url}`
+                    ? product.image.url
                     : "/no-image.png"
                 }
                 alt={product.title}

@@ -10,7 +10,7 @@ export default function MyOrders() {
 
     const fetchOrders = async () => {
       const res = await fetch(
-        `${import.meta.env.VITE_STRAPI_URL}/api/orders?filters[user][id][$eq]=${user.id}&populate[order_items][populate][product][populate]=image`,
+        `${import.meta.env.VITE_STRAPI_URL}/api/orders?populate[order_items][populate][product][populate]=image`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@ export default function MyOrders() {
 
                 {imageUrl && (
                   <img
-                    src={`${import.meta.env.VITE_STRAPI_URL}${imageUrl}`}
+                    src={imageUrl}
                     alt={item.product?.name}
                     className="w-20 h-20 object-cover rounded-lg"
                   />

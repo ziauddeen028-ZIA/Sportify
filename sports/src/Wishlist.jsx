@@ -59,7 +59,7 @@ export default function Wishlist() {
 
                 {/* IMAGE */}
                 <img
-                  src={`${import.meta.env.VITE_STRAPI_URL}${item.image?.url}`}
+                  src={item.image?.url}
                   alt={item.title}
                   className="w-full h-40 object-contain"
                 />

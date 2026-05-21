@@ -34,7 +34,7 @@ export default function Cart({ setOpen }) {
                     {/* IMAGE */}
                     <div className="h-[70px] w-[70px] md:h-[100px] md:w-[100px] flex-shrink-0">
                         <img
-                            src={`${import.meta.env.VITE_STRAPI_URL}${item.image?.url}`}
+                            src={item.image?.url}
                             alt={item.title}
                             className="w-full h-full object-contain"
                         />

@@ -69,7 +69,8 @@ export default function Payment() {
 
             try {
                 // 1️⃣ Create Order
-                const orderRes = await fetch("http://localhost:1337/api/orders", {
+                const orderRes = await fetch(
+                    `${import.meta.env.VITE_STRAPI_URL}/api/orders`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -77,7 +78,6 @@ export default function Payment() {
                     },
                     body: JSON.stringify({
                         data: {
-                            user: user.id,
                             totalAmount: total,
                             orderStatus: method === "cod" ? "pending" : "paid",
                             paymentMethod: method,
@@ -93,11 +93,12 @@ export default function Payment() {
                     throw new Error("Order creation failed");
                 }
 
-                const orderId = orderData.data.id;
+                const orderDocumentId = orderData.data.documentId;
 
                 // 2️⃣ Create Order Items
                 for (let item of cart) {
-                    const itemRes = await fetch("http://localhost:1337/api/order-items", {
+                    const itemRes = await fetch(
+                        `${import.meta.env.VITE_STRAPI_URL}/api/order-items`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -108,10 +109,10 @@ export default function Payment() {
                                 price: item.price,
                                 quantity: item.quantity,
                                 order: {
-                                    connect: [orderId]
+                                    connect: [orderDocumentId]
                                 },
                                 product: {
-                                    connect: [item.id]
+                                    connect: [item.documentId]
                                 }
                             }
                         })

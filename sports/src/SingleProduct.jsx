@@ -59,7 +59,7 @@ export default function SingleProduct() {
                         <img
                             src={
                                 product.image?.url
-                                    ? `${import.meta.env.VITE_STRAPI_URL}${product.image.url}`
+                                    ? product.image.url
                                     : "/no-image.png"
                             }
                             alt={product.title}
@@ -146,6 +146,7 @@ export default function SingleProduct() {
                                 } else {
                                     dispatch(addToCart({
                                         id: product.id,
+                                        documentId: product.documentId,
                                         title: product.title,
                                         price: product.price,
                                         image: product.image,
@@ -172,6 +173,7 @@ export default function SingleProduct() {
                                 } else {
                                     dispatch(addToWishlist({
                                         id: product.id,
+                                        documentId: product.documentId,
                                         title: product.title,
                                         price: product.price,
                                         image: product.image

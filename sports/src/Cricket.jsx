@@ -60,6 +60,7 @@ export default function Cricket() {
                                     } else {
                                         dispatch(addToWishlist({
                                             id: item.id,
+                                            documentId: item.documentId,
                                             title: item.title,
                                             price: item.price,
                                             image: item.image
@@ -74,8 +75,8 @@ export default function Cricket() {
 
                             <img
                                 src={
-                                    item.image?.url
-                                        ? `${import.meta.env.VITE_STRAPI_URL}${item.image.url}`
+                                    item.image
+                                        ? item.image.url
                                         : "/no-image.png"
                                 }
                                 alt={item.title}
