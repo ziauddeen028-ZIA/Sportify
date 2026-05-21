@@ -10,17 +10,20 @@ export default function MyOrders() {
 
     const fetchOrders = async () => {
       const res = await fetch(
-        `${import.meta.env.VITE_STRAPI_URL}/api/orders?filters[user][id][$eq]=${user.id}&populate[order_items][populate][product][populate]=image`,
+        `${import.meta.env.VITE_STRAPI_URL}/api/orders?populate=user&populate[order_items][populate][product][populate]=image`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
       const data = await res.json();
-      console.log(data);
-      setOrders(data.data || []);
+
+      const filteredOrders = data.data.filter(
+        (order) => order.user?.id === user.id
+      );
+
+      setOrders(filteredOrders);
 
     };
 
